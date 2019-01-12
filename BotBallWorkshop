@@ -1,0 +1,51 @@
+#include <kipr/botball.h>
+int leftMotor = 1;
+int rightMotor = 0;
+int arm_port = 0;
+int arm_up = 0; 
+int arm_down = 1000;
+int claw_port = 1;
+int claw_open = 2047;
+int claw_close = 1040;   //FOR YELLOW CUBE THIS MAY CHANGE FOR ANYTHING ELSE
+
+void driveStraight(int power, int time)
+{
+    motor(leftMotor, power);
+    motor(rightMotor, power);
+    msleep(time);
+}
+
+void rotateRight(int power, int time)
+{
+    motor(leftMotor, power);
+    motor(rightMotor, -power);
+    msleep(time);
+}
+
+void rotateLeft(int power, int time)
+{
+    motor(leftMotor, -power);
+    motor(rightMotor, power);
+    msleep(time);
+}
+
+int main()
+{
+    enable_servos();
+    driveStraight(100, 2000);    //Drive to Object
+    ao();
+    set_servo_position(claw_port, claw_close);    //Grab Object
+    msleep(1000);
+    set_servo_position(arm_port, arm_up); //Bring object up
+    msleep(2000); 
+    rotateRight(100, 1000);    //Rotate right then left back to original position
+    rotateLeft(100, 1000);
+    driveStraight(-100, 2000);    //Drive backwards, and set the object back down
+    ao();
+    set_servo_position(arm_port, arm_down);
+    msleep(1000);
+    set_servo_position(claw_port, claw_open);
+    return 0;
+    
+
+}
